@@ -12,7 +12,7 @@ namespace OrderProcessing.Tests;
 public sealed class ProcessOrderCreatedTests
 {
     [Fact]
-    public async Task External_integration_failure_marks_order_failed_and_attempt_unsuccessful()
+    public async Task Integracao_falhou_marca_pedido_failed()
     {
         var store = new InMemoryDataStore();
         var order = Order.Create("user-sub-1", [new NewOrderItem(Guid.NewGuid(), "Café", 10m, 1)]);
@@ -35,7 +35,7 @@ public sealed class ProcessOrderCreatedTests
     }
 
     [Fact]
-    public async Task Processing_the_same_event_id_twice_invokes_external_integration_only_once()
+    public async Task Evento_duplicado_nao_reprocessa()
     {
         var store = new InMemoryDataStore();
         var order = Order.Create("user-sub-1", [new NewOrderItem(Guid.NewGuid(), "Café", 10m, 1)]);

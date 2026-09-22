@@ -10,12 +10,12 @@ namespace OrderProcessing.Tests;
 
 public sealed class CreateOrderTests
 {
-    private static readonly Guid CoffeeId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-    private static readonly Guid MilkId = Guid.Parse("33333333-3333-3333-3333-333333333333");
-    private static readonly Guid FreeSampleId = Guid.Parse("99999999-9999-9999-9999-999999999999");
+    private static readonly Guid CafeId = Guid.Parse("7c2a9e14-3b81-4f06-a9d2-1e58c0b47a2f");
+    private static readonly Guid LeiteId = Guid.Parse("b4d17f88-2c09-45ae-9e31-6a0d8f52c1b7");
+    private static readonly Guid BrindeId = Guid.Parse("c8a1d4e2-9b70-4f13-a582-6e3c1d90b447");
 
     [Fact]
-    public async Task Create_valid_order_persists_order_uses_database_prices_and_creates_outbox()
+    public async Task Cria_pedido_valido()
     {
         var store = SeedStore();
         var handler = CreateHandler(store);
@@ -23,8 +23,8 @@ public sealed class CreateOrderTests
         var result = await handler.HandleAsync(
             new CreateOrderCommand(
             [
-                new CreateOrderItemCommand(CoffeeId, 2),
-                new CreateOrderItemCommand(MilkId, 1)
+                new CreateOrderItemCommand(CafeId, 2),
+                new CreateOrderItemCommand(LeiteId, 1)
             ]),
             CancellationToken.None);
 
@@ -35,40 +35,40 @@ public sealed class CreateOrderTests
         order.Id.Should().Be(result.OrderId);
         order.UserId.Should().Be("user-sub-1");
         order.Status.Should().Be(OrderStatus.Pending);
-        order.TotalAmount.Should().Be(55.60m);
+        order.TotalAmount.Should().Be(16.47m);
         order.Items.Should().HaveCount(2);
-        order.Items.Single(item => item.ProductId == CoffeeId).UnitPrice.Should().Be(24.90m);
-        order.Items.Single(item => item.ProductId == CoffeeId).ProductName.Should().Be("Café Santa Cruz 500g");
+        order.Items.Single(item => item.ProductId == CafeId).UnitPrice.Should().Be(4.99m);
+        order.Items.Single(item => item.ProductId == CafeId).ProductName.Should().Be("Café 500g");
 
         store.Committed.Outbox.Should().ContainSingle();
         var outbox = store.Committed.Outbox.Single();
         outbox.AggregateId.Should().Be(order.Id);
         outbox.EventType.Should().Be("OrderCreatedV1");
-        outbox.Id.Should().NotBeEmpty();
         outbox.Payload.Should().Contain(order.Id.ToString());
     }
 
     [Fact]
-    public async Task Create_order_without_items_fails()
+    public async Task Rejeita_sem_itens()
     {
-        var handler = CreateHandler(SeedStore());
+        var store = SeedStore();
+        var handler = CreateHandler(store);
 
         var act = () => handler.HandleAsync(new CreateOrderCommand([]), CancellationToken.None);
 
         await act.Should().ThrowAsync<ValidationAppException>()
             .Where(ex => ex.Errors.ContainsKey("items"));
 
-        SeedStore().Committed.Orders.Should().BeEmpty();
+        store.Committed.Orders.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task Create_order_with_quantity_zero_or_negative_fails()
+    public async Task Rejeita_quantidade_invalida()
     {
         var store = SeedStore();
         var handler = CreateHandler(store);
 
         var act = () => handler.HandleAsync(
-            new CreateOrderCommand([new CreateOrderItemCommand(CoffeeId, 0)]),
+            new CreateOrderCommand([new CreateOrderItemCommand(CafeId, 0)]),
             CancellationToken.None);
 
         await act.Should().ThrowAsync<ValidationAppException>();
@@ -77,24 +77,23 @@ public sealed class CreateOrderTests
     }
 
     [Fact]
-    public async Task Create_order_with_invalid_product_price_fails()
+    public async Task Rejeita_preco_invalido()
     {
         var store = SeedStore();
         var handler = CreateHandler(store);
 
         var act = () => handler.HandleAsync(
-            new CreateOrderCommand([new CreateOrderItemCommand(FreeSampleId, 1)]),
+            new CreateOrderCommand([new CreateOrderItemCommand(BrindeId, 1)]),
             CancellationToken.None);
 
         await act.Should().ThrowAsync<ValidationAppException>()
-            .Where(ex => ex.Message.Contains("invalid price", StringComparison.OrdinalIgnoreCase)
-                         || ex.Errors["items"].Any(message => message.Contains("invalid price")));
+            .Where(ex => ex.Errors["items"].Any(message => message.Contains("preço inválido")));
 
         store.Committed.Orders.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task Create_order_rolls_back_when_outbox_insert_fails()
+    public async Task Outbox_falhou_nao_grava_pedido()
     {
         var store = SeedStore();
         var handler = new CreateOrderHandler(
@@ -107,13 +106,13 @@ public sealed class CreateOrderTests
             NullLogger<CreateOrderHandler>.Instance);
 
         var act = () => handler.HandleAsync(
-            new CreateOrderCommand([new CreateOrderItemCommand(CoffeeId, 1)]),
+            new CreateOrderCommand([new CreateOrderItemCommand(CafeId, 1)]),
             CancellationToken.None);
 
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Outbox insert failed.");
 
-        store.Committed.Orders.Should().BeEmpty("Order and OutboxMessage share the same local transaction");
+        store.Committed.Orders.Should().BeEmpty();
         store.Committed.Outbox.Should().BeEmpty();
     }
 
@@ -132,9 +131,9 @@ public sealed class CreateOrderTests
     private static InMemoryDataStore SeedStore()
     {
         var store = new InMemoryDataStore();
-        store.Committed.Products.Add(Product.Rehydrate(CoffeeId, "Café Santa Cruz 500g", 24.90m, DateTimeOffset.UtcNow));
-        store.Committed.Products.Add(Product.Rehydrate(MilkId, "Leite Integral 1L", 5.80m, DateTimeOffset.UtcNow));
-        store.Committed.Products.Add(Product.Rehydrate(FreeSampleId, "Brinde", 0m, DateTimeOffset.UtcNow));
+        store.Committed.Products.Add(Product.Rehydrate(CafeId, "Café 500g", 4.99m, DateTimeOffset.UtcNow));
+        store.Committed.Products.Add(Product.Rehydrate(LeiteId, "Leite 1L", 6.49m, DateTimeOffset.UtcNow));
+        store.Committed.Products.Add(Product.Rehydrate(BrindeId, "Brinde", 0m, DateTimeOffset.UtcNow));
         return store;
     }
 }

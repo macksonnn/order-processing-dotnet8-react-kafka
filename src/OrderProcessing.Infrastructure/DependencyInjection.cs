@@ -1,10 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Npgsql;
+using OrderProcessing.Application.Abstractions.Identity;
 using OrderProcessing.Application.Abstractions.Integrations;
 using OrderProcessing.Application.Abstractions.Messaging;
 using OrderProcessing.Application.Abstractions.Persistence;
 using OrderProcessing.Infrastructure.Health;
+using OrderProcessing.Infrastructure.Identity;
 using OrderProcessing.Infrastructure.Integrations;
 using OrderProcessing.Infrastructure.Messaging.Kafka;
 using OrderProcessing.Infrastructure.Messaging.Outbox;
@@ -23,6 +26,16 @@ public static class DependencyInjection
         services.Configure<KafkaOptions>(configuration.GetSection(KafkaOptions.SectionName));
         services.Configure<OutboxOptions>(configuration.GetSection(OutboxOptions.SectionName));
         services.Configure<ExternalIntegrationOptions>(configuration.GetSection(ExternalIntegrationOptions.SectionName));
+        services.Configure<KeycloakOptions>(configuration.GetSection(KeycloakOptions.SectionName));
+
+        services.AddHttpClient<IIdentityProvider, KeycloakIdentityProvider>((provider, client) =>
+        {
+            var authority = provider.GetRequiredService<IOptions<KeycloakOptions>>().Value.Authority
+                ?? throw new InvalidOperationException("Authentication:Authority is not configured.");
+
+            client.BaseAddress = new Uri(authority.TrimEnd('/') + "/");
+            client.Timeout = TimeSpan.FromSeconds(15);
+        });
 
         services.AddSingleton(NpgsqlDataSource.Create(connectionString));
         services.AddScoped<NpgsqlSession>();

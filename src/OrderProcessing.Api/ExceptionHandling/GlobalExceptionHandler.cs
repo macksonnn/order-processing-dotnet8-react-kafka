@@ -33,6 +33,21 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             return true;
         }
 
+        if (exception is UnauthorizedAppException unauthorized)
+        {
+            var problem = new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Não autorizado",
+                Detail = unauthorized.Message,
+                Instance = httpContext.Request.Path
+            };
+
+            httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+            return true;
+        }
+
         if (exception is NotFoundAppException notFound)
         {
             var problem = new ProblemDetails

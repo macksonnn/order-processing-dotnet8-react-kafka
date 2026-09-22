@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using OrderProcessing.Application.Auth;
 using OrderProcessing.Application.Orders.CreateOrder;
 using OrderProcessing.Application.Orders.GetOrderById;
 using OrderProcessing.Application.Orders.GetOrders;
@@ -11,6 +12,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddScoped<AuthService>();
         services.AddScoped<GetProductsHandler>();
         services.AddScoped<CreateOrderHandler>();
         services.AddScoped<GetOrdersHandler>();

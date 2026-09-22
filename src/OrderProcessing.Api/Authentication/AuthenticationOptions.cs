@@ -8,5 +8,7 @@ public sealed class AuthenticationOptions
 
     public string Audience { get; set; } = string.Empty;
 
+    public string ClientId { get; set; } = "order-processing-web";
+
     public bool RequireHttpsMetadata { get; set; }
 }

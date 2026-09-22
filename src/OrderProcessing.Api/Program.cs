@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Paste the Keycloak JWT. Example: Bearer {token}",
+        Description = "Token do POST /api/auth/login. Exemplo: Bearer {token}",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,

@@ -12,13 +12,12 @@ docker compose up -d
 
 Sobe Postgres (`5432`), Kafka (`9092`), Kafka UI (`http://localhost:8081`) e Keycloak (`http://localhost:8080`).
 
+Entra pela tela do React (`POST /api/auth/login`). Quem fala com o Keycloak é a API; o front não conhece realm nem client. O `UserId` do pedido vem do `sub` do token.
+
 | Onde | URL | Usuário | Senha |
 |---|---|---|---|
-| App (realm `order-processing`) | `http://localhost:5173` | `demo` | `demo123` |
-| App (mesmo realm) | `http://localhost:5173` | `admin` | `admin` |
+| App | `http://localhost:5173` | `demo` / `admin` | `demo123` / `admin` |
 | Console admin do Keycloak (realm `master`) | `http://localhost:8080` | `admin` | `admin` |
-
-`demo` não entra no Administration Console. Se a tela for a do Keycloak admin, use `admin` / `admin`.
 
 API:
 
@@ -53,5 +52,3 @@ dotnet test
 O consumer abre uma TX curta (`Pending → Processing`), **fecha a conexão**, chama a integração fake (5–10s) e só então abre outra TX para `Completed` ou `Failed`. Sem lock de banco durante o delay.
 
 Publisher e consumer sobem junto com a API (`BackgroundService`). Não deu tempo de separar um worker.
-
-Login do pedido vem do `sub` do JWT. Sem roles.

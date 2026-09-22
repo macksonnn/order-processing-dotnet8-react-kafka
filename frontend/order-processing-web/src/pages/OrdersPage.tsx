@@ -20,14 +20,13 @@ export function OrdersPage() {
   return (
     <section className="card">
       <h1>Pedidos</h1>
-      <p className="muted">Atualização automática a cada 2,5s para acompanhar Pending → Processing → Completed/Failed.</p>
 
       {query.error instanceof ApiError && <div className="alert">{formatProblem(query.error.problem)}</div>}
 
       <table>
         <thead>
           <tr>
-            <th>OrderId</th>
+            <th>Pedido</th>
             <th>Status</th>
             <th>Total</th>
             <th>Criado em</th>

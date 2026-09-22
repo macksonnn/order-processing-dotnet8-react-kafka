@@ -9,8 +9,8 @@ export default function App() {
     <div className="layout">
       <header className="topbar">
         <div>
-          <strong>Order Processing</strong>
-          <p className="muted">Pedidos assíncronos com Outbox + Kafka</p>
+          <strong>Santa Cruz</strong>
+          <p className="muted">Pedidos</p>
         </div>
         <nav>
           <Link to="/">Novo pedido</Link>

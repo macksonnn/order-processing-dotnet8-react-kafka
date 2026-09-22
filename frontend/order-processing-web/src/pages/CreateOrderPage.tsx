@@ -68,7 +68,6 @@ export function CreateOrderPage() {
   return (
     <section className="card">
       <h1>Novo pedido</h1>
-      <p className="muted">O preço vem do catálogo persistido. O frontend nunca envia valor monetário.</p>
 
       {productsQuery.isLoading && <p>Carregando produtos...</p>}
       {productsQuery.error instanceof ApiError && (

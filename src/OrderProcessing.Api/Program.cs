@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Order Processing API",
+        Title = "Pedidos Santa Cruz",
         Version = "v1"
     });
 

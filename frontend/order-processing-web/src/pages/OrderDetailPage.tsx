@@ -32,7 +32,6 @@ export function OrderDetailPage() {
       <p>
         <span className={`status status-${order.status.toLowerCase()}`}>{order.status}</span>
       </p>
-      <p className="muted">O status muda sozinho após o consumer processar o evento no Kafka.</p>
 
       <dl>
         <div>

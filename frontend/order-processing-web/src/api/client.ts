@@ -48,7 +48,6 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
     try {
       problem = (await response.json()) as ProblemDetails;
     } catch {
-      // Keep the generic problem when the body is not JSON.
     }
 
     throw new ApiError(problem);

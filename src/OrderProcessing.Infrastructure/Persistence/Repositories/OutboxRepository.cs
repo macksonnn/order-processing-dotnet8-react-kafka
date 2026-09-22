@@ -34,7 +34,6 @@ public sealed class OutboxRepository : IOutboxRepository
         int batchSize,
         CancellationToken cancellationToken)
     {
-        // FOR UPDATE SKIP LOCKED keeps concurrent publishers from claiming the same row.
         const string sql = """
             WITH claimed AS (
                 SELECT "Id"

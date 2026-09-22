@@ -107,9 +107,6 @@ public sealed class ProcessOrderCreatedHandler
                         message.CorrelationId);
                     return;
                 }
-
-                // Order already Processing: sequential redelivery after TX #1 committed.
-                // Inbox EventId is not processed yet, so we resume instead of treating this as a duplicate.
             }
 
             var attemptNumber = await _attempts.GetNextAttemptNumberAsync(message.OrderId, ct);

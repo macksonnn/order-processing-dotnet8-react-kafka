@@ -41,7 +41,6 @@ public sealed class CreateOrderHandler
     {
         Validate(command);
 
-        // Duplicate ProductIds are consolidated explicitly so the snapshot has one line per product.
         var consolidated = command.Items
             .GroupBy(item => item.ProductId)
             .Select(group => new CreateOrderItemCommand(group.Key, group.Sum(item => item.Quantity)))

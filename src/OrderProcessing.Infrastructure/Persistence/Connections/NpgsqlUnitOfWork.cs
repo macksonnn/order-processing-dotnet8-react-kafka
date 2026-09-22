@@ -27,7 +27,6 @@ public sealed class NpgsqlUnitOfWork : IUnitOfWork
         }
         finally
         {
-            // Connection is never kept across the external integration delay.
             await _session.CloseAsync();
         }
     }

@@ -23,7 +23,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             var problem = new HttpValidationProblemDetails(validation.Errors)
             {
                 Status = StatusCodes.Status400BadRequest,
-                Title = "Validation failed",
+                Title = "Falha na validação",
                 Detail = validation.Message,
                 Instance = httpContext.Request.Path
             };
@@ -38,7 +38,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             var problem = new ProblemDetails
             {
                 Status = StatusCodes.Status404NotFound,
-                Title = $"{notFound.Resource} not found",
+                Title = $"{notFound.Resource} não encontrado",
                 Detail = notFound.Message,
                 Instance = httpContext.Request.Path
             };
@@ -53,8 +53,8 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         var fallback = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error occurred",
-            Detail = "The request could not be completed.",
+            Title = "Erro inesperado",
+            Detail = "Não deu para concluir o pedido.",
             Instance = httpContext.Request.Path
         };
 

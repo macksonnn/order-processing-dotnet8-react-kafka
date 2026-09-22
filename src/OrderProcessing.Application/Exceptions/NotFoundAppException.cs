@@ -12,6 +12,6 @@ public sealed class NotFoundAppException : Exception
 
     public static NotFoundAppException Order(Guid orderId)
     {
-        return new NotFoundAppException("Order", $"Order '{orderId}' was not found.");
+        return new NotFoundAppException("Pedido", $"Pedido '{orderId}' não encontrado.");
     }
 }

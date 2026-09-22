@@ -55,7 +55,7 @@ public sealed class CreateOrderHandler
         {
             throw new ValidationAppException(
                 "items",
-                $"The following products do not exist: {string.Join(", ", missing)}.");
+                $"Produto não encontrado: {string.Join(", ", missing)}.");
         }
 
         var invalidPrice = products.Where(product => product.Price <= 0).ToList();
@@ -63,7 +63,7 @@ public sealed class CreateOrderHandler
         {
             throw new ValidationAppException(
                 "items",
-                $"The following products have an invalid price: {string.Join(", ", invalidPrice.Select(p => p.Id))}.");
+                $"Produto com preço inválido: {string.Join(", ", invalidPrice.Select(p => p.Id))}.");
         }
 
         var lines = consolidated.Select(item =>
@@ -95,17 +95,17 @@ public sealed class CreateOrderHandler
     {
         if (command.Items is null || command.Items.Count == 0)
         {
-            throw new ValidationAppException("items", "At least one item is required.");
+            throw new ValidationAppException("items", "Informe pelo menos um item.");
         }
 
         if (command.Items.Any(item => item.ProductId == Guid.Empty))
         {
-            throw new ValidationAppException("items", "ProductId is required.");
+            throw new ValidationAppException("items", "Produto é obrigatório.");
         }
 
         if (command.Items.Any(item => item.Quantity <= 0))
         {
-            throw new ValidationAppException("items", "Quantity must be greater than zero.");
+            throw new ValidationAppException("items", "Quantidade deve ser maior que zero.");
         }
     }
 }

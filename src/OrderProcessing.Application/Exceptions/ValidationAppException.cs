@@ -14,7 +14,7 @@ public sealed class ValidationAppException : Exception
     }
 
     public ValidationAppException(IDictionary<string, string[]> errors)
-        : base("One or more validation errors occurred.")
+        : base("Um ou mais campos estão inválidos.")
     {
         Errors = errors;
     }

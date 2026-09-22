@@ -1,0 +1,54 @@
+## .NET / Visual Studio
+.vs/
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+*.ntvs_analysis.dat
+*.VC.db
+*.VC.VC.opendb
+*.pidb
+*.svclog
+TestResults/
+[Pp]ackages/
+*.cache
+
+## Rider / ReSharper / VS Code
+.idea/
+*.sln.iml
+_ReSharper*/
+*.DotSettings.user
+.vscode/
+
+## Node
+node_modules/
+dist/
+.npm/
+*.tsbuildinfo
+
+## Overrides pessoais (nao sao necessarios para rodar)
+.env.local
+.env.*.local
+appsettings.Local.json
+*.pfx
+*.p12
+
+## OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*~
+*.swp
+*.swo
